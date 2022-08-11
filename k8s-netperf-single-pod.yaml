@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netperf
+  labels:
+    app.kubernetes.io/name: netperf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: netperf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: netperf
+    spec:
+      containers:
+      - name: server
+        image: pete911/netperf:latest
+        imagePullPolicy: IfNotPresent
+        command: ["netserver", "-D"]
+        ports:
+        - containerPort: 12865
+          name: server
+      - name: client
+        image: pete911/netperf:latest
+        imagePullPolicy: IfNotPresent
+        command:
+          - sleep
+          - "3600"
